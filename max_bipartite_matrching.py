@@ -1,39 +1,18 @@
-import pandas as pd
+# import pandas as pd
 import pprint
 
-# Python program to find maximal Bipartite matching.
 
-AVAILABLE_DATES = [5, 6, 7, 8, 9, 10]
-NOTE = {'Hila': [5, 7, 8, 9, 10],
-        'Yana': [6, 7, 8, 9, 10],
-        'Anat': [6, 9, 10],
-        'Lilach': [5, 7, 9, 10],
-        'Moran': [5, 6, 7, 8, 9, 10],
-        'Meital': [5, 6, 7, 8, 9],
-        }
-
-##
-
-df = pd.DataFrame(index=['Hila'], data=[[[6,7]]], columns=['Dates'])
-
-# NOTE = {'Hila': [6],
-#         'Yana': [5],
-#         'Anat': [5, 7, 8],
-#         'Lilach': [6, 8],
-#         'Moran': [],
-#         'Meital': [10],
-#         }
-##
-def preprocess():
+def preprocess(AVAILABLE_DATES, NOTE):
     AVAILABLE_DATES_set = set(AVAILABLE_DATES)
     for worker in NOTE.keys():
         NOTE[worker] = sorted(list(AVAILABLE_DATES_set - set(NOTE[worker])))
         # print(f"worker: {worker:10} |     {sorted(list(AVAILABLE_DATES_set - set(NOTE[worker])))}")
+    return NOTE
 
 
-##
-def create_graph():
-    preprocess()
+def create_graph(AVAILABLE_DATES, NOTE):
+    NOTE = preprocess(AVAILABLE_DATES, NOTE)
+    # print(f"After Preprocessing: {NOTE}")
     total_people = len(NOTE)
     total_available_dates = len(AVAILABLE_DATES)
     graph = [[0 for _ in range(total_people)] for _ in range(total_available_dates)]
@@ -50,16 +29,18 @@ def create_graph():
 
     # pprint.pprint(graph)
     return graph
+
+
 # bpGraph = create_graph()
 
-##
+#
 # bpGraph = [[0, 1, 1, 0, 0, 0],
 #            [1, 0, 0, 1, 0, 0],
 #            [0, 0, 1, 0, 0, 0],
 #            [0, 0, 1, 1, 0, 0],
 #            [0, 0, 0, 0, 0, 0],
 #            [0, 0, 0, 0, 0, 1]]
-##
+#
 class GFG:
     def __init__(self, graph):
         # residual graph
@@ -109,15 +90,14 @@ class GFG:
         return result
 
 
-##
-bpGraph = create_graph()
-g = GFG(bpGraph)
-# print("Maximum number of applicants that can get job is %d " % g.maxBPM())
-g.max_bpm()
-# print(g.res)
+def wrapper(AVAILABLE_DATES, NOTE):
+    bpGraph = create_graph(AVAILABLE_DATES, NOTE)
+    g = GFG(bpGraph)
+    # print("Maximum number of applicants that can get job is %d " % g.maxBPM())
+    g.max_bpm()
+    # print(g.res)
+    people_list = list(NOTE.keys())
 
-for person in g.res:
-    key_res = g.res[person]
-    print(f" Date: {AVAILABLE_DATES[person]:3d},   who: {list(NOTE.keys())[key_res]}")
-
-# This code is contributed by Neelam Yadav
+    for person in g.res:
+        date = g.res[person]
+        print(f" Date: {AVAILABLE_DATES[date]:3d} who: {people_list[person]}")
