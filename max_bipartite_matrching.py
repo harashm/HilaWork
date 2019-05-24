@@ -1,18 +1,39 @@
+import pandas as pd
 import pprint
 
 # Python program to find maximal Bipartite matching.
 
 AVAILABLE_DATES = [5, 6, 7, 8, 9, 10]
-NOTE = {'Hila': [6],
-        'Yana': [5],
-        'Anat': [5, 7, 8],
-        'Lilach': [6, 8],
-        'Moran': [],
-        'Meital': [10],
+NOTE = {'Hila': [5, 7, 8, 9, 10],
+        'Yana': [6, 7, 8, 9, 10],
+        'Anat': [6, 9, 10],
+        'Lilach': [5, 7, 9, 10],
+        'Moran': [5, 6, 7, 8, 9, 10],
+        'Meital': [5, 6, 7, 8, 9],
         }
 
+##
 
+df = pd.DataFrame(index=['Hila'], data=[[[6,7]]], columns=['Dates'])
+
+# NOTE = {'Hila': [6],
+#         'Yana': [5],
+#         'Anat': [5, 7, 8],
+#         'Lilach': [6, 8],
+#         'Moran': [],
+#         'Meital': [10],
+#         }
+##
+def preprocess():
+    AVAILABLE_DATES_set = set(AVAILABLE_DATES)
+    for worker in NOTE.keys():
+        NOTE[worker] = sorted(list(AVAILABLE_DATES_set - set(NOTE[worker])))
+        # print(f"worker: {worker:10} |     {sorted(list(AVAILABLE_DATES_set - set(NOTE[worker])))}")
+
+
+##
 def create_graph():
+    preprocess()
     total_people = len(NOTE)
     total_available_dates = len(AVAILABLE_DATES)
     graph = [[0 for _ in range(total_people)] for _ in range(total_available_dates)]
@@ -27,12 +48,9 @@ def create_graph():
             # print(f'worker_idx = {worker_idx}, date = {date}, date2idx[date] = {date2idx[date]}')
             graph[date2idx[date]][worker_idx] = 1
 
-    pprint.pprint(graph)
+    # pprint.pprint(graph)
     return graph
-
-
-bpGraph = create_graph()
-
+# bpGraph = create_graph()
 
 ##
 # bpGraph = [[0, 1, 1, 0, 0, 0],
@@ -72,7 +90,7 @@ class GFG:
         return False
 
     # Returns maximum number of matching
-    def maxBPM(self):
+    def max_bpm(self):
         """An array to keep track of the applicants assigned to jobs. The value of matchR[i] is the applicant
          number assigned to job i, the value -1 indicates nobody is assigned."""
         match_r = [-1] * self.jobs
@@ -87,14 +105,16 @@ class GFG:
             if self.bpm(i, match_r, seen):
                 result += 1
 
-        print(match_r)
+        # print(match_r)
         return result
 
 
 ##
+bpGraph = create_graph()
 g = GFG(bpGraph)
-print("Maximum number of applicants that can get job is %d " % g.maxBPM())
-print(g.res)
+# print("Maximum number of applicants that can get job is %d " % g.maxBPM())
+g.max_bpm()
+# print(g.res)
 
 for person in g.res:
     key_res = g.res[person]

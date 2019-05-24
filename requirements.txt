@@ -1,0 +1,4 @@
+qgrid
+notebook>=4.0.0
+pandas>=0.18.0
+ipywidgets>=7.0.0
